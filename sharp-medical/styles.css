@@ -1,0 +1,133 @@
+/* gradient_light= #80e0dc   */
+
+/* gradient_dark= #18b9e2   */
+
+/* accent blue = #29abe2 */
+
+/* white = #ffffff */
+
+/* light black = rgb(58, 76, 87)  */
+
+/* black = rgb(33, 37, 41)  */
+
+.title-container {
+  text-align: left;
+
+  box-sizing: border-box;
+
+  margin-top: 0;
+
+  font-weight: 600;
+
+  margin-bottom: 0.85em;
+
+  font-size: 2.5rem;
+
+  letter-spacing: -0.09375rem;
+
+  line-height: 3.5rem;
+}
+
+.jobs-filters-container {
+  border-radius: 65px;
+
+  box-shadow: 0 6px 26px 10px #8888882e;
+}
+
+.lastModifiedInner {
+  --rem: 16;
+
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+  --tw-shadow-color: 0 1px 3px 0 var(--tw-shadow-color),
+    0 1px 2px -1px var(--tw-shadow-color);
+
+  --border-color: rgb(218, 221, 224);
+
+  font-family: Verdana, sans-serif;
+
+  display: flex;
+
+  border: 1px solid var(--border-color);
+
+  background: #fff;
+
+  min-height: 2.15rem;
+
+  width: 100%;
+
+  min-width: 14rem;
+
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+
+  border-radius: 0.375rem;
+
+  color: #e2ebf0;
+
+  padding: 0.5rem;
+
+  box-sizing: border-box;
+}
+
+.grid-listing-row {
+  background: #fff;
+
+  border: 1px solid transparent !important;
+
+  box-shadow: 0 40px 50px 0 rgba(0, 0, 0, 0.08), 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+
+  cursor: pointer;
+
+  transition: box-shadow 0.2s ease-in-out;
+
+  z-index: 1;
+
+  padding: 1rem 2.5rem;
+
+  list-style: none;
+
+  color: rgb(33, 37, 41);
+
+  border-radius: 1.5625rem;
+
+  margin-bottom: 1.25rem !important;
+}
+
+.grid-listing-row:hover {
+  border: 1px solid #b3b3b3 !important;
+}
+
+.grid-listing-row.current-selected-row {
+  background-image: linear-gradient(90deg, #18b9e2 0, #80e0dc);
+
+  background-repeat: repeat-x;
+
+  border: 1px solid #b3b3b3 !important;
+
+  color: white;
+}
+
+.accent-text {
+  color: #18b9e2 !important;
+}
+
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 5px solid #fff;
+  border-bottom-color: #80e0dc;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

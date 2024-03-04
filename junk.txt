@@ -1,0 +1,32 @@
+// Function to filter Jobs
+        function getUniqueJobs($json)
+        {
+            // Decode the JSON string into an associative array
+            $data = json_decode($json, true);
+
+            // Check if the 'jobs' array exists in the data
+            if (isset($data['jobs']) && is_array($data['jobs'])) {
+                $jobs = $data['jobs'];
+
+                // Initialize an empty array to store unique jobs
+                $uniqueJobs = array();
+
+                // Loop through each job and store it based on its ID
+                foreach ($jobs as $job) {
+                    if (isset($job['id'])) {
+                        $uniqueJobs[$job['id']] = $job;
+                    }
+                }
+
+                // Convert the array of unique jobs back to indexed array
+                $uniqueJobs = array_values($uniqueJobs);
+
+                return $uniqueJobs;
+            }
+
+            return null;
+        }
+        // Get the unique jobs
+        $uniqueJobs = getUniqueJobs($response);
+
+        // Output the unique jobs
