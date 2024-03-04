@@ -34,7 +34,9 @@
         defer></script>
 
     <link rel="stylesheet" href="https://sharpmedicalstaffing.com/wp-content/themes/sharp/sharp-medical/styles.css">
-
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap')
+    </style>
 </head>
 
 
@@ -215,8 +217,9 @@
                         <?php
 
                         // Fetch the specialty options from the API
-                        
-                        $specialtyOptions = json_decode(file_get_contents('https://sharpjobs.azurewebsites.net/api/specialty'), true);
+                        $specialtyEndPoint = $discipline && count($discipline) == 1 ? 'https://sharpjobs.azurewebsites.net/api/specialty?discipline=' . $discipline[0] : 'https://sharpjobs.azurewebsites.net/api/specialty';
+
+                        $specialtyOptions = json_decode(file_get_contents($specialtyEndPoint), true);
 
                         // Get the URL parameters and set them to empty Array if they are not provided
                         
@@ -342,7 +345,7 @@
 
         <div class="jobs-search-results flex gap-6">
 
-            <div class="jobs-container w-full md:w-2/4">
+            <div class="jobs-container w-full lg:w-2/4">
                 <div class="jobs">
 
 
@@ -536,7 +539,7 @@
 
                                 echo '</div>';
 
-                                echo '<a href="https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=' . $job['discipline'] . '&speciality=' . $job['specialty'] . '&id=' . $job['id'] . '"target="_blank"><div class="interested-btn-container max-sm:flex md:hidden">';
+                                echo '<a href="https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=' . $job['discipline'] . '&specialty=' . $job['specialty'] . '&city=' . $job['city'] . '&state=' . $job['state'] . '&id=' . $job['id'] . '" target="_blank"><div class="interested-btn-container max-md:flex lg:hidden">';
                                 echo '<button class="btn-gradient btn-lg rounded-pill hover-highlight quick-apply-submit-button">Interested</button></div></a>';
 
                                 echo '</li>';
@@ -550,7 +553,7 @@
 
                     }
                     echo '</div>';
-                    echo '<div class="border border-[#b3b3b3] border-solid rounded-xl message-box my-10 text-center p-2 bg-[#f4f5f6] justify-center items-center hidden' . ${$showMessageBox} . ' gap-2" role="alert">
+                    echo '<div class="border border-[#b3b3b3] border-solid rounded-xl message-box my-10 text-center p-2 bg-[#f4f5f6] justify-center items-center' . $showMessageBox . ' gap-2" role="alert">
                 <span class="message">
                 Sorry, we could not find any matching jobs for your search.
                 </span>
@@ -577,7 +580,7 @@
                         echo '<div class="quick-apply-job-location">' . '<strong>Location: </strong>' . $firstJob['city'] . ', ' . $firstJob['state'] . '</div>';
                         echo '<div class="quick-apply-job-shift">' . '<strong>Shift: </strong>' . $firstJob['shift'] . '</div>';
                         echo '<div class="flex flex-wrap gap-4">';
-                        echo '<div class="quick-apply-job-start-date">' . '<strong>Start Date: </strong>' . (new DateTime($firstJob['start']))->format('m/d/Y h:i A') . '</div>';
+                        echo '<div class="quick-apply-job-start-date">' . '<strong>Start Date: </strong>' . $firstJob['start'] . '</div>';
                         echo '<div class="quick-apply-job-last-modified">' . '<strong>Last Updated: </strong>' . (new DateTime($firstJob['lastModifiedDate']))->format('m/d/Y h:i A') . '</div>';
                         echo '</div>';
                         echo '<div class="quick-apply-job-id w-full my-2"><strong>Job ID: </strong>' . $firstJob['id'] . '</div>';
@@ -655,7 +658,7 @@
                         </button>
                         </div>
                         <div class="quick-apply-full-job-details-container flex max-w-2/4">
-                        <a class="flex justify-center items-center underline quick-apply-full-job-details-link" href="https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=' . $firstJob['discipline'] . '&specialty=' . $firstJob['specialty'] . '&id=' . $firstJob['id'] . '" target="_blank">See full job details</a></div>
+                        <a class="flex justify-center items-center underline quick-apply-full-job-details-link" href="https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=' . $firstJob['discipline'] . '&specialty=' . $firstJob['specialty'] . '&city=' . $firstJob['city'] . '&state=' . $firstJob['state'] . '&id=' . $firstJob['id'] . '" target="_blank">See full job details</a></div>
                         </div>';
                         echo '</div>';
                         echo '</div>';

@@ -10,26 +10,21 @@
 
 /* black = rgb(33, 37, 41)  */
 
+/* Fix Navabr Collapse Class styling Issue with Tailwind */
+.collapse {
+  visibility: unset !important;
+}
+body {
+  font-family: Montserrat, sans-serif !important;
+}
 .title-container {
   text-align: left;
-
   box-sizing: border-box;
-
-  margin-top: 0;
-
-  font-weight: 600;
-
-  margin-bottom: 0.85em;
-
-  font-size: 2.5rem;
-
-  letter-spacing: -0.09375rem;
-
-  line-height: 3.5rem;
+  font-family: "BlackPearl", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 }
 
 .jobs-filters-container {
-  border-radius: 65px;
+  border-radius: 1.56rem;
 
   box-shadow: 0 6px 26px 10px #8888882e;
 }
@@ -69,8 +64,10 @@
 
   box-sizing: border-box;
 }
+.grid-listing-row,
+.quick-apply-container {
+  padding: 2.5rem;
 
-.grid-listing-row {
   background: #fff;
 
   border: 1px solid transparent !important;
@@ -83,8 +80,6 @@
 
   z-index: 1;
 
-  padding: 1rem 2.5rem;
-
   list-style: none;
 
   color: rgb(33, 37, 41);
@@ -93,7 +88,33 @@
 
   margin-bottom: 1.25rem !important;
 }
+.quick-apply-container-fixed {
+  bottom: 0;
+  /* max-width: inherit !important; */
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: fixed;
+  top: 100px;
+  /* width: inherit !important;  */
+  z-index: 999999;
+  box-sizing: border-box;
+  margin-right: 10px;
+}
+.quick-apply-container::-webkit-scrollbar {
+  width: 0.5em;
+  border-radius: 10px;
+  scroll-behavior: smooth;
+}
 
+.quick-apply-container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.quick-apply-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(#18b9e2, #80e0dc);
+  border-radius: 10px;
+}
 .grid-listing-row:hover {
   border: 1px solid #b3b3b3 !important;
 }
@@ -110,6 +131,43 @@
 
 .accent-text {
   color: #18b9e2 !important;
+}
+.gradient-text {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#18b9e2),
+    to(#80e0dc)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 700;
+  -webkit-text-fill-color: transparent;
+}
+.btn-gradient {
+  background-image: linear-gradient(90deg, #18b9e2 0, #80e0dc) !important;
+  background-repeat: repeat-x !important;
+  color: #fff !important;
+}
+.btn-gradient:hover {
+  background-image: linear-gradient(90deg, #80e0dc 0, #18b9e2) !important;
+}
+.highlight {
+  background: hsla(0, 0%, 100%, 0.5);
+  border-radius: 100%;
+  display: none;
+  filter: blur(1.5625rem);
+  height: 2rem;
+  margin-left: -3.125rem;
+  margin-top: -3.125rem;
+  position: absolute;
+  transform: translateZ(0);
+  width: 6.25rem;
+}
+.quick-apply-submit-button span {
+  display: block;
+  margin: 0 auto;
 }
 
 .loader {
@@ -130,4 +188,81 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Quick Apply Form  */
+.quick-apply-form-text-field {
+  background-color: #fff;
+  border: 2.5px solid #c8cbd0;
+  border-radius: 1.5rem;
+  color: #000;
+  font-size: 0.9rem;
+  padding: 0.75rem;
+}
+.quick-apply-form-select-field {
+  background-color: #fff;
+  border: 2.5px solid #c8cbd0;
+  border-radius: 1.5rem;
+  color: #000;
+  font-size: 0.9rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0.75rem !important;
+}
+.custom-file-input {
+  height: 3.125rem;
+  position: relative;
+  width: 100%;
+}
+.quick-apply-resume-field-remove-button {
+  cursor: pointer;
+  position: absolute;
+  right: 1rem;
+  top: 0.5rem;
+  z-index: 9999;
+}
+.lnr {
+  font-family: Linearicons-Free;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  font-variant-ligatures: normal;
+  font-variant-caps: normal;
+  font-variant-numeric: normal;
+  font-variant-east-asian: normal;
+  font-variant-alternates: normal;
+  font-variant-position: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.quick-apply-form-terms {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.custom-file-label {
+  content: "+";
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-right: 0.9375rem;
+}
+.lnr-cross-circle:before {
+  content: "\e880";
+}
+
+.hr-job-detail-page {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+  border: 0;
+  border-top: 1px solid #e6e7eb;
+  margin-bottom: 1.25rem;
+  margin-top: 1.25rem;
+}
+#last-modified {
+  background-color: #fff !important;
 }

@@ -1,8 +1,18 @@
+// q: how to get first array item?
+
 import {
   usStates,
   usCities,
 } from "https://sharpmedicalstaffing.com/wp-content/themes/sharp/sharp-medical/constants/index.js";
 
+const usCurrencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+
+  // These options are needed to round to whole numbers if that's what you want.
+  //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+  //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+});
 const urlParams = new URLSearchParams(window.location.search);
 // Discipline Filter
 // const disciplineSelectElement = document.getElementById("discipline");
@@ -52,10 +62,10 @@ new MultiSelectTag("discipline", {
   },
 });
 
-new MultiSelectTag("speciality", {
+new MultiSelectTag("specialty", {
   rounded: true, // default true
   shadow: true, // default false
-  placeholder: "Select or Search Speciality", // default Search...
+  placeholder: "Select or Search Specialty", // default Search...
   tagColor: {
     textColor: "rgb(33, 37, 41)",
     borderColor: "#18b9e2",
@@ -63,8 +73,8 @@ new MultiSelectTag("speciality", {
   },
 
   onChange: function (values) {
-    // Get Selected speciality options from Input
-    const specialityParameters = decodeURIComponent(
+    // Get Selected specialty options from Input
+    const specialtyParameters = decodeURIComponent(
       values
         .map((paramObj) => {
           return paramObj.value;
@@ -75,11 +85,11 @@ new MultiSelectTag("speciality", {
     // Get the current URL
     let url = new URL(window.location.href);
 
-    // Update the "speciality" URL parameter value
-    url.searchParams.set("speciality", specialityParameters);
+    // Update the "specialty" URL parameter value
+    url.searchParams.set("specialty", specialtyParameters);
     // Delete URL parameter if not present
-    if (specialityParameters === "") {
-      url.searchParams.delete("speciality");
+    if (specialtyParameters === "") {
+      url.searchParams.delete("specialty");
     }
     //update URL
     history.replaceState(null, null, url);
@@ -188,13 +198,13 @@ new MultiSelectTag("city", {
 // Function to update URL parameters
 function updateUrlParams() {
   const discipline = document.getElementById("discipline").value;
-  const speciality = document.getElementById("speciality").value;
+  const specialty = document.getElementById("specialty").value;
   const city = document.getElementById("city").value;
   const state = document.getElementById("state").value;
 
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.set("discipline", discipline);
-  urlParams.set("speciality", speciality);
+  urlParams.set("specialty", specialty);
   urlParams.set("city", city);
   urlParams.set("state", state);
 
@@ -203,7 +213,6 @@ function updateUrlParams() {
 
 // Get Last Modified Date
 document.querySelector("#last-modified").addEventListener("change", (e) => {
-  console.log(e.target.value);
   const lastModifiedParameter = e.target.value;
   let url = new URL(window.location.href);
 
@@ -232,7 +241,7 @@ const getJobs = (skip = 0, removePrev = false) => {
   const urlParams = new URLSearchParams(window.location.search);
   const parameters = {
     discipline: urlParams.get("discipline")?.toString()?.split(",") || null,
-    speciality: urlParams.get("speciality")?.toString()?.split(",") || null,
+    specialty: urlParams.get("specialty")?.toString()?.split(",") || null,
     city: urlParams.get("city")?.toString()?.split(",") || null,
     state: urlParams.get("state")?.toString()?.split(",") || null,
     lastmodified: urlParams.get("lastmodified") || null,
@@ -244,7 +253,7 @@ const getJobs = (skip = 0, removePrev = false) => {
     Skip: skip,
     Take: 100,
     Discipline: parameters.discipline,
-    Specialty: parameters.speciality,
+    Specialty: parameters.specialty,
     City: parameters.city,
     State: parameters.state,
   });
@@ -289,6 +298,97 @@ const jobsContainer = document.querySelector(".jobs");
 const msgBox = document.querySelector(".message-box");
 const msgSpan = document.querySelector(".message");
 const loader = document.querySelector(".loader");
+
+// Update Current Job in Quick Apply
+const quickApplyCurrentItem = document.querySelector(
+  ".quick-apply-current-item-view"
+);
+
+const updateCurrentQuickApplyItem = (listing, data = null) => {
+  const quickApplyJobDetailsLink = document.querySelector(
+    ".quick-apply-full-job-details-link"
+  );
+  quickApplyCurrentItem.innerHTML = "";
+  let jobHtml = "";
+  if (listing) {
+    const listingAttributes = listing.dataset;
+    const {
+      id,
+      title,
+      start,
+      city,
+      state,
+      weeklyrate,
+      weeklyhours,
+      shift,
+      lastmodifieddate,
+      description,
+      discipline,
+      specialty,
+    } = listingAttributes;
+    jobHtml = `
+    <div class="quick-apply-job-title h3">${title}</div>
+    <div class="quick-apply-job-weekly-rate gradient-text h5"><strong>${usCurrencyFormatter.format(
+      Number(weeklyrate).toFixed(2)
+    )}
+    </strong> wk</div>
+    <div class="flex flex-wrap gap-4 mt-8">
+        <div class="quick-apply-job-location"><strong>Location: </strong>${city}, ${state}</div>
+        <div class="quick-apply-job-shift"><strong>Shift: </strong>${shift}</div>
+    <div class="flex flex-wrap gap-4">
+        <div class="quick-apply-job-start-date"><strong>Start Date: </strong>${start}</div>
+        <div class="quick-apply-job-last-modified"><strong>Last Updated: </strong>${new Date(
+          lastmodifieddate
+        ).toLocaleString()}</div>
+        </div>
+    </div>
+        <div class="quick-apply-job-id w-full my-2"><strong>Job ID:</strong> ${id} </div>
+        <div class="quick-apply-job-description my-2"><strong>Description: </strong>${description}</div>
+`;
+    quickApplyJobDetailsLink.href = `https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=${discipline}&specialty=${specialty}&city=${city}&state=${state}&id=${id}`;
+  }
+  if (data) {
+    const {
+      id,
+      title,
+      specialty,
+      start,
+      city,
+      state,
+      weeklyRate,
+      weeklyHours,
+      description,
+      shift,
+      lastModifiedDate,
+      discipline,
+    } = data;
+    jobHtml = `
+    <div class="quick-apply-job-title h3">${title}</div>
+    <div class="quick-apply-job-weekly-rate gradient-text h5"><strong>${usCurrencyFormatter.format(
+      Number(weeklyRate).toFixed(2)
+    )}
+    </strong> wk</div>
+    <div class="flex flex-wrap gap-4 mt-8">
+        <div class="quick-apply-job-location"><strong>Location: </strong>${city}, ${state}</div>
+        <div class="quick-apply-job-shift"><strong>Shift: </strong>${shift}</div>
+    <div class="flex flex-wrap gap-4">
+        <div class="quick-apply-job-start-date"><strong>Start Date: </strong>${new Date(
+          start
+        ).toLocaleString()}</div>
+        <div class="quick-apply-job-last-modified"><strong>Last Updated: </strong>${new Date(
+          lastModifiedDate
+        ).toLocaleString()}</div>
+        </div>
+    </div>
+
+        <div class="quick-apply-job-id w-full my-2"><strong>Job ID:</strong> ${id} </div>
+        <div class="quick-apply-job-description my-2"><strong>Description: </strong>${description}</div>
+`;
+    quickApplyJobDetailsLink.href = `https://sharpmedicalstaffing.com/find-travel-medical-job/?discipline=${discipline}&specialty=${specialty}&id=${id}`;
+  }
+
+  quickApplyCurrentItem.innerHTML = jobHtml;
+};
 // Toggle Active Class on Job Row
 let allListings = document.querySelectorAll("li.grid-listing-row");
 const attachEventToAllListings = () => {
@@ -298,6 +398,7 @@ const attachEventToAllListings = () => {
         .querySelectorAll("li.grid-listing-row")
         .forEach((listing) => listing.classList.remove("current-selected-row"));
       e.currentTarget.classList.add("current-selected-row");
+      updateCurrentQuickApplyItem(listing);
     });
   });
 };
@@ -336,7 +437,7 @@ const renderJobs = (data, updateExistingList = true) => {
       jobTitleId.appendChild(jobId);
 
       const jobLocation = document.createElement("div");
-      jobLocation.className = "flex gap-4 job-location";
+      jobLocation.className = "flex flex-wrap gap-4 job-location";
       const location = document.createElement("div");
       location.className = "flex flex-col";
       location.innerHTML =
@@ -347,8 +448,8 @@ const renderJobs = (data, updateExistingList = true) => {
       const weeklyRate = document.createElement("div");
       weeklyRate.className = "flex flex-col job-weekly-rate";
       weeklyRate.innerHTML =
-        "<p><strong>Weekly Rate:</strong> $" +
-        job.weeklyRate.toFixed(2) +
+        "<p><strong>Weekly Rate:</strong>" +
+        usCurrencyFormatter.format(Number(job.weeklyRate).toFixed(2)) +
         "</p>";
       const weeklyHours = document.createElement("div");
       weeklyHours.className = "flex flex-col job-weekly-hours";
@@ -360,19 +461,24 @@ const renderJobs = (data, updateExistingList = true) => {
       jobLocation.appendChild(weeklyRate);
       jobLocation.appendChild(weeklyHours);
 
-      const jobDescription = document.createElement("div");
-      jobDescription.className = "job-description";
-      jobDescription.innerHTML =
-        "<p><strong>Job Description:</strong> " + job.description + "</p>";
-
       jobDetails.appendChild(jobTitleId);
       jobDetails.appendChild(jobLocation);
-      jobDetails.appendChild(jobDescription);
-
+      const interestedLink = document.createElement("a");
+      interestedLink
+        ? (interestedLink.href = `https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=${job.discipline}&specialty=${job.specialty}&city=${job.city}&state=${job.state}&id=${job.id}`)
+        : null;
+      interestedLink ? (interestedLink.target = "_blank") : null;
+      const interestedLinkBtn = `<div class="interested-btn-container max-sm:flex md:hidden"><button class="btn-gradient btn-lg rounded-pill hover-highlight quick-apply-submit-button">Interested</button></div>`;
+      interestedLink ? (interestedLink.innerHTML = interestedLinkBtn) : null;
       li.appendChild(jobDetails);
+      li.appendChild(interestedLink);
+
       document.querySelector(".jobs").appendChild(li);
       msgBox.classList.remove("flex");
       msgBox.classList.add("hidden");
+
+      // Update Quick Apply Job with first Search Result
+      index === 0 && updateCurrentQuickApplyItem(false, data.jobs[0]);
       allListings = document.querySelectorAll("li.grid-listing-row");
       attachEventToAllListings();
     });
@@ -391,8 +497,8 @@ const updatePageTitle = () => {
   const discipline = urlParams.has("discipline")
     ? urlParams.get("discipline").split(",")
     : null;
-  const speciality = urlParams.has("speciality")
-    ? urlParams.get("speciality").split(",")
+  const specialty = urlParams.has("specialty")
+    ? urlParams.get("specialty").split(",")
     : null;
   const city = urlParams.has("city") ? urlParams.get("city").split(",") : null;
   const state = urlParams.has("state")
@@ -401,8 +507,8 @@ const updatePageTitle = () => {
 
   // Create the statement
   let statement = "Travel";
-  if (speciality && speciality.length === 1) {
-    statement += " " + speciality[0];
+  if (specialty && specialty.length === 1) {
+    statement += " " + specialty[0];
   }
   if (discipline && discipline.length === 1) {
     statement += " " + discipline[0];
@@ -416,13 +522,122 @@ const updatePageTitle = () => {
   document.querySelector(".page-title").textContent = statement;
 };
 
+// Fetch Function
+const fetchData = async (endpoint) => {
+  return await fetch(endpoint)
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Error Fetching Data, Response not ok!");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.error(error));
+};
+// Function to delete parameter
+function removeUrlParameter(key) {
+  // Get the current URL
+  let url = window.location.href;
+
+  // Remove the parameter and its value
+  url = url
+    .replace(new RegExp("[?&]" + key + "=[^&#]*(#.*)?$"), "$1")
+    .replace(new RegExp("([?&])" + key + "=[^&]*&"), "$1");
+
+  // If the parameter was the only one in the URL, remove the '?' or '&' at the end
+  url = url.replace(/(\?|&)$/, "");
+
+  // Update the URL without refreshing the page
+  window.history.replaceState({ path: url }, "", url);
+}
+// Function to create/update multi select
+const updateMultiSelect = (specialties) => {
+  //remove previous
+  document.querySelector("#specialty+.mult-select-tag").remove();
+
+  new MultiSelectTag("specialty", {
+    rounded: true, // default true
+    shadow: true, // default false
+    placeholder: "Select or Search Specialty", // default Search...
+    tagColor: {
+      textColor: "rgb(33, 37, 41)",
+      borderColor: "#18b9e2",
+      bgColor: "#80e0dc",
+    },
+    onChange: function (values) {
+      // Get Selected specialty options from Input
+      const specialtyParameters = decodeURIComponent(
+        values
+          .map((paramObj) => {
+            return paramObj.value;
+          })
+          .join(",")
+        // .toLowerCase()
+      );
+      // Get the current URL
+      let url = new URL(window.location.href);
+
+      // Update the "specialty" URL parameter value
+      url.searchParams.set("specialty", specialtyParameters);
+      // Delete URL parameter if not present
+      if (specialtyParameters === "") {
+        url.searchParams.delete("specialty");
+      }
+      //update URL
+      history.replaceState(null, null, url);
+    },
+  });
+};
+// Update Specialty Options on Discipline Parameter Change
+const updateSpecialtyOptions = () => {
+  const specialtyInput = document.querySelector("#specialty");
+  const urlParams = new URLSearchParams(window.location.search);
+  removeUrlParameter("specialty");
+  // removeUrlParameter("specialty");
+  const discipline = urlParams.has("discipline")
+    ? urlParams.get("discipline").split(",")
+    : null;
+  specialtyInput.innerHTML = "";
+  if (discipline) {
+    discipline.forEach((discipline) => {
+      fetch(
+        `https://sharpjobs.azurewebsites.net/api/specialty?discipline=${discipline}`
+      )
+        .then((res) => res.json())
+        .then((specialties) => {
+          specialties.forEach((specialty) => {
+            const option = document.createElement("option");
+            option.value = specialty.name; // Set the value attribute
+            option.textContent = specialty.name; // Set the text content
+            specialtyInput.appendChild(option); // Append the option to the select element
+          });
+          updateMultiSelect(specialties);
+        });
+    });
+  }
+  if (!discipline) {
+    fetch(`https://sharpjobs.azurewebsites.net/api/specialty`)
+      .then((res) => res.json())
+      .then((specialties) => {
+        specialties.forEach((specialty) => {
+          const option = document.createElement("option");
+          option.value = specialty.name; // Set the value attribute
+          option.textContent = specialty.name; // Set the text content
+          specialtyInput.appendChild(option); // Append the option to the select element
+        });
+        updateMultiSelect(specialties);
+      });
+  }
+};
 // watchURLParameterChanges();
 let urlParams2 = new URLSearchParams(window.location.search);
 const observer = new MutationObserver(function (mutations) {
   // Array of URL parameters to watch for changes
   const parametersToWatch = [
     "discipline",
-    "speciality",
+    "specialty",
     "city",
     "state",
     "lastmodified",
@@ -433,9 +648,10 @@ const observer = new MutationObserver(function (mutations) {
     const currentParams = new URLSearchParams(window.location.search);
     for (const param of parametersToWatch) {
       if (urlParams2.get(param) !== currentParams.get(param)) {
+        urlParams2 = currentParams;
+        param == "discipline" && updateSpecialtyOptions();
         skip = 100;
         updatePageTitle();
-        urlParams2 = currentParams;
 
         const data = await getJobs(0, true);
         renderJobs(data, false);
@@ -458,14 +674,11 @@ observer.observe(document, config);
 
 // Load more jobs on scroll
 let skip = 100;
-function checkIfElementInViewport(el) {
+function checkIfFooterInViewport(el) {
   const rect = el.getBoundingClientRect();
   return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    window.innerHeight + window.scrollY >=
+    document.body.offsetHeight - rect.height
   );
 }
 function elementInViewport(el) {
@@ -487,18 +700,40 @@ function elementInViewport(el) {
     left + width <= window.pageXOffset + window.innerWidth
   );
 }
+const jobsFiltersContainer = document.querySelector(".jobs-filters-container");
+const quickApplyContainer = document.querySelector(".quick-apply-container");
+const footer = document.querySelector("#footer");
 window.addEventListener("scroll", async function () {
   let scrollHeight = document.documentElement.scrollHeight;
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   let clientHeight = document.documentElement.clientHeight;
   if (
-    checkIfElementInViewport(loadMoreBtn) &&
-    totalRecords > 0 &&
-    prevReqCompleted
+    elementInViewport(jobsFiltersContainer) ||
+    elementInViewport(msgBox) ||
+    checkIfFooterInViewport(footer)
   ) {
+    quickApplyContainer.classList.remove("quick-apply-container-fixed");
+  } else {
+    !quickApplyContainer.classList.contains("quick-apply-container-fixed") &&
+      quickApplyContainer.classList.add("quick-apply-container-fixed");
+  }
+  if (elementInViewport(loadMoreBtn) && totalRecords > 0 && prevReqCompleted) {
     prevReqCompleted = false;
     const data = await getJobs(skip);
     renderJobs(data);
     skip += 100;
   }
 });
+
+/* Highlight Hover Effect  */
+
+// const quickApplySubmit = document.querySelector(".quick-apply-submit");
+// const quickApplySubmitHighlight = document.querySelector(".highlight");
+
+// quickApplySubmit.addEventListener("mousemove", (e) => {
+//   let rect = e.target.getBoundingClientRect();
+//   const left = e.clientX - rect.left;
+//   const top = e.clientY - rect.top;
+//   quickApplySubmitHighlight.style.top = `${top}px`;
+//   quickApplySubmitHighlight.style.left = `${left}px`;
+// });
