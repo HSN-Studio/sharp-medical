@@ -384,7 +384,7 @@ const updateCurrentQuickApplyItem = (listing, data = null) => {
         <div class="quick-apply-job-id w-full my-2"><strong>Job ID:</strong> ${id} </div>
         <div class="quick-apply-job-description my-2"><strong>Description: </strong>${description}</div>
 `;
-    quickApplyJobDetailsLink.href = `https://sharpmedicalstaffing.com/find-travel-medical-job/?discipline=${discipline}&specialty=${specialty}&id=${id}`;
+    quickApplyJobDetailsLink.href = `https://sharpmedicalstaffing.com/apply-to-travel-medical-job/?discipline=${discipline}&specialty=${specialty}&id=${id}`;
   }
 
   quickApplyCurrentItem.innerHTML = jobHtml;
